@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Socket</title>
+</head>
+<body >
+	<div id="chat">
+		<ul id="messages" v-if="messages.length>0">
+			<li class="message" v-for="message in messages">{{message}}</li>
+		</ul>
+		<form action="" @submit.prevent="send">
+			<input type="text" v-model="message">
+			<button>Send</button>
+		</form>
+		<h1>Hurray</h1>
+	
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.js"></script>
+	<script>
+		let socket = io();
+		new Vue({
+			el: '#chat',
+			data:{
+				messages: [],
+				message:''
+			},
+			mounted: function(){
+
+					socket.on('chat.message',function(message){
+						this.messages.push(message);
+					}.bind(this));	
+			},
+			methods:{
+				send(){
+					socket.emit('chat.message', this.message);
+					this.message = '';
+				}
+			}
+		});
+	</script>
+</body>
+</html>
